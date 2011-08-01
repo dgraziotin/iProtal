@@ -9,6 +9,9 @@ class IProtal(object):
         self.store = dbmanager.DBManager().store()
         self.artists = None
         
+    def delete_artists(self):
+        self.store.find(models.Band, models.Band.origin == u'Libreria').remove()
+        
     def get_artists(self):
         artists = self.store.find(models.Band, models.Band.origin == u'Libreria')
         if artists.is_empty():
@@ -17,6 +20,7 @@ class IProtal(object):
         return artists
         
     def fetch_artists_from_library(self):
+        #self.delete_artists()
         tracks = self.library.tracks()
         bands = []
         artists_seen = []
@@ -43,14 +47,18 @@ class IProtal(object):
             track.genre.set(self.get_artist(track.artist()).genre)
         
     def get_artist(self, name):
-        return self.store.find(models.Band, models.Band.name == name).one()
+        return self.store.find(models.Band, models.Band.name == unicode(name))
+    
+    def update_genre(self, name, genre):
+        self.store.find(models.Band, models.Band.name == unicode(name) and models.Band.origin == 'Library').one()
+        self.store.commit()
     
     
 if __name__=="__main__":
-    iprotal = IProtal()
-    artists = iprotal.get_artists()
-    
     """
+    iprotal = IProtal()
+    iprotal.fetch_artists_from_library()
+    print iprotal.get_artists().count()
     progarchives = progarchives.Progarchives()
     prog_bands = progarchives.fetch()
     print len(prog_bands)

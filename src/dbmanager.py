@@ -20,8 +20,14 @@ class DBManager(object):
         if not os.path.exists("/tmp/iProtal.db"):
             _database = create_database("sqlite:/tmp/iProtal.db")
             _store = Store(_database)
-            _store.execute("CREATE TABLE band "
-                  "(id INTEGER PRIMARY KEY, name VARCHAR, genre VARCHAR, origin VARCHAR)")
+            _store.execute("CREATE TABLE band ("
+                  "id INTEGER PRIMARY KEY, "
+                  "name VARCHAR, "
+                  "genre VARCHAR, "
+                  "origin VARCHAR, "
+                  "UNIQUE (name, genre, origin) ON CONFLICT REPLACE"
+                  ")")
+
         else:
             _database = create_database("sqlite:/tmp/iProtal.db")
             _store = Store(_database)

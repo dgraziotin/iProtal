@@ -2,7 +2,7 @@ from storm.locals import *
 import dbmanager
 class Band(object):
     __storm_table__ = "band"
-    __storm_primary__ = "id"
+    __storm_primary__ = "name", "genre", "origin"
     _create_table = ""
     id = Int()
     name = Unicode()
