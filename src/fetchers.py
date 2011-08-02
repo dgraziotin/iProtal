@@ -10,26 +10,33 @@ def is_hash_different(html_element, old_hash):
     return new_hash != old_hash
 
 class Progarchives(object):
+    
+    def __init__(self):
+        self.artists = []
+        
     def fetch(self):
-        parsed_page = lxml.html.parses(open('/Users/dgraziotin/Projects/iProtal/src/progarchives.html','r')).getroot()
+        self.artists = []
+        parsed_page = lxml.html.parse(open('/Users/dgraziotin/Projects/iProtal/src/progarchives.html','r')).getroot()
         processed_table = parsed_page.xpath("//table")[0]
-        bands = []
-        band_list = []
+        
+        band_attributes = []
         for row in processed_table[1:]:
-            band_list = []
+            band_attributes = []
             try:
                 for col in row:
-                    band_list.append(col.text_content().strip())
+                    band_attributes.append(col.text_content().strip())
                 band = models.Band()
-                band.name = unicode(band_list[0])
-                band.genre = unicode(band_list[1])
+                band.name = unicode(band_attributes[0])
+                band.genre = unicode(band_attributes[1])
                 band.origin = u"Progarchives"
-                bands.append(band)
+                self.artists.append(band)
             except UnicodeDecodeError, e:
                 print str(e)
             except UnicodeEncodeError, e:
                 print str(e)
-        return bands
+        return self.artists
     
-    def save(self):
-        pass
+    def save(self, store):
+        for artist in self.artists:
+            store.add(artist)
+        store.commit()

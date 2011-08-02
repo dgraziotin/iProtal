@@ -12,11 +12,11 @@ class IProtal(object):
     def delete_artists(self):
         self.store.find(models.Band, models.Band.origin == u'Libreria').remove()
         
-    def get_artists(self):
-        artists = self.store.find(models.Band, models.Band.origin == u'Libreria')
+    def get_artists(self, origin=u'Libreria'):
+        artists = self.store.find(models.Band, models.Band.origin == origin)
         if artists.is_empty():
             self.fetch_artists_from_library()
-            artists = self.store.find(models.Band, models.Band.origin == u'Libreria')
+            artists = self.store.find(models.Band, models.Band.origin == origin)
         return artists
         
     def fetch_artists_from_library(self):
@@ -55,15 +55,16 @@ class IProtal(object):
     
     
 if __name__=="__main__":
-    """
+    
     iprotal = IProtal()
-    iprotal.fetch_artists_from_library()
+    
     print iprotal.get_artists().count()
-    progarchives = progarchives.Progarchives()
-    prog_bands = progarchives.fetch()
-    print len(prog_bands)
-    print prog_bands[12].name
-    print prog_bands[12].genre
-    """
+    
+    progarchives = fetchers.Progarchives()
+    progarchives.fetch()
+    progarchives.save(iprotal.store)
+    
+    print iprotal.get_artists(u"Progarchives").count()
+
     
     
