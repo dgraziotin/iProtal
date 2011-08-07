@@ -1,17 +1,47 @@
 import lxml.html
-import lxml.html.soupparser
 import lxml.etree
-import dbmanager
 import models
 import urllib2
 import json
 
-def is_hash_different(html_element, old_hash):
-    html_element_string = lxml.html.tostring(html_element)
-    new_hash = hash(html_element_string)
-    return new_hash != old_hash
+"""
+Abstract base class for fetchers
+"""
+class Fetcher(object):
+    
+    """
+    Base URL for fetching Artists' details 
+    """
+    __BASE_URL = ''
+    
+    """
+    Unique name for fetcher, used in models.Band.origin
+    """
+    
+    __NAME = ''
+    
+    """
+    Given an Artist name, searches it remotely for the genre.
+    It returns a list of models.Band objects or an Empty list.
+    The name is internally treated as case-insensitive.
+    This should be the only one method called by other objects
+    """
+    def search(self, name):
+        raise NotImplementedError( "Should have implemented this" )
+    
+    """
+    Fetches one or more artists under the given name.
+    The name is internally treated as case-insensitive.
+    This method should always be used as helper for search(name) method
+    """
+    def fetch(self, name):
+        raise NotImplementedError( "Should have implemented this" )
+    
 
-class ProgArchives(object):
+class ProgArchives(Fetcher):
+    
+    __BASE_URL = 'http://www.progarchives.com/bands-alpha.asp?letter=*'
+    __NAME = 'ProgArchives'
 
     def search(self, name):
         results = []
@@ -22,7 +52,7 @@ class ProgArchives(object):
             
     def fetch(self, name):
         results = []
-        parsed_page = lxml.html.parse(open('/Users/dgraziotin/Projects/iProtal/src/progarchives.html','r')).getroot()
+        parsed_page = lxml.html.parse(ProgArchives.__BASE_URL)
         processed_table = parsed_page.xpath("//table")[0]
         
         band_attributes = []
@@ -34,7 +64,7 @@ class ProgArchives(object):
                 band = models.Band()
                 band.name = unicode(band_attributes[0])
                 band.genre = unicode(band_attributes[1])
-                band.origin = u"ProgArchives"
+                band.origin = unicode(ProgArchives.__NAME)
                 results.append(band)
             except UnicodeDecodeError, e:
                 print str(e)
@@ -43,7 +73,9 @@ class ProgArchives(object):
         return results
 
         
-class MetalArchives(object):
+class MetalArchives(Fetcher):
+    
+    __BASE_URL = 'http://www.metal-archives.com/search/ajax-band-search/?field=name&exactBandMatch=1&query='
     
     def search(self, name):
         return self.fetch(name)
@@ -51,7 +83,7 @@ class MetalArchives(object):
     def fetch(self, artist):
         results = []
         artist = urllib2.quote(artist)
-        base_url = 'http://www.metal-archives.com/search/ajax-band-search/?field=name&query='+artist+'&sEcho=1&iDisplayStart='
+        base_url = MetalArchives.__BASE_URL+artist+'&sEcho=1&iDisplayStart='
         
         idisplaystart = 0
         url = base_url + str(idisplaystart)
@@ -71,11 +103,10 @@ class MetalArchives(object):
             try:
                 band.name = unicode(name)
                 band.genre = unicode(genre)
-                band.origin = u"MetalArchives"
+                band.origin = unicode(MetalArchives.__NAME)
+                results.append(band)
             except UnicodeDecodeError, e:
                 print str(e)
             except UnicodeEncodeError, e:
                 print str(e)
-            results.append(band)
-        
         return results

@@ -1,12 +1,7 @@
-from storm.locals import *
-import dbmanager
 class Band(object):
-    __storm_table__ = "band"
-    __storm_primary__ = "name", "genre", "origin"
-    _create_table = ""
-    id = Int()
-    name = Unicode()
-    genre = Unicode()
-    origin = Unicode()
+    def __init_(self, name=u"", genre=u"", origin=u""):
+        self.name = name
+        self.genre = genre
+        self.origin = origin
     
     

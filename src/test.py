@@ -1,31 +1,21 @@
 from appscript import app
 import models
-import dbmanager
 import fetchers
 
 class IProtal(object):
     def __init__(self):
         self.library =  app('iTunes').library_playlists['Libreria']
-        self.store = dbmanager.DBManager().store()
-        self.artists = None
+        self.itunes_tracks = self.fetch_itunes_tracks()
+        self.bands = self.fetch_bands()
         
-    def delete_artists(self):
-        self.store.find(models.Band, models.Band.origin == u'Libreria').remove()
-        
-    def get_artists(self, origin=u'Libreria'):
-        artists = self.store.find(models.Band, models.Band.origin == origin)
-        if artists.is_empty():
-            self.fetch_artists_from_library()
-            artists = self.store.find(models.Band, models.Band.origin == origin)
-        return artists
-        
-    def fetch_artists_from_library(self):
-        #self.delete_artists()
-        tracks = self.library.tracks()
+    def fetch_itunes_tracks(self):
+        return self.library.tracks()
+    
+    def fetch_bands(self):
         bands = []
         artists_seen = []
-
-        for track in tracks:
+        
+        for track in self.itunes_tracks:
             artist = track.artist()
             genre = track.genre()
             origin = u'Libreria'
@@ -36,31 +26,24 @@ class IProtal(object):
                 band.origin = origin
                 bands.append(band)
                 artists_seen.append(artist)
-        for band in bands:
-            self.store.add(band)
-        self.store.commit()
-        
-    def update_artists_from_library(self):
-        tracks = self.library.tracks()
-        
-        for track in tracks:
-            track.genre.set(self.get_artist(track.artist()).genre)
-        
-    def get_artist(self, name):
-        return self.store.find(models.Band, models.Band.name == unicode(name))
+        return bands
     
-    def update_genre(self, name, genre):
-        self.store.find(models.Band, models.Band.name == unicode(name) and models.Band.origin == 'Library').one()
-        self.store.commit()
+    def get_itunes_tracks(self, artist):
+        artist = artist.lower()
+        tracks = []
+        for track in self.itunes_tracks:
+            if track.artist.get().lower() == artist:
+                tracks.append(track)
+        return tracks
+    
     
     
 if __name__=="__main__":
-    
     iprotal = IProtal()
-        
+    tool = iprotal.get_itunes_tracks("tool")
     progarchives = fetchers.ProgArchives()
-    metalarchives = fetchers.MetalArchives()
-    print progarchives.search(u"Gojira")[0].genre
-    print metalarchives.fetch("Gojira")[0].genre
+    print tool[0].genre.get()
+    print progarchives.search("tool")[0].genre
+    
     
     
