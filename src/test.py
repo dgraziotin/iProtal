@@ -57,14 +57,10 @@ class IProtal(object):
 if __name__=="__main__":
     
     iprotal = IProtal()
-    
-    print iprotal.get_artists().count()
-    
-    progarchives = fetchers.Progarchives()
-    progarchives.fetch()
-    progarchives.save(iprotal.store)
-    
-    print iprotal.get_artists(u"Progarchives").count()
-
+        
+    progarchives = fetchers.ProgArchives()
+    metalarchives = fetchers.MetalArchives()
+    print progarchives.search(u"Gojira")[0].genre
+    print metalarchives.fetch("Gojira")[0].genre
     
     

@@ -8,3 +8,5 @@ class Band(object):
     name = Unicode()
     genre = Unicode()
     origin = Unicode()
+    
+    

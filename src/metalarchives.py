@@ -1,7 +1,7 @@
 import json
 import urllib2
 import lxml.html
-
+#
 if __name__ == "__main__":
     # http://www.metal-archives.com/search/ajax-band-search/?field=name&query=*&sEcho=1&iDisplayStart=0
     base_url = 'http://www.metal-archives.com/search/ajax-band-search/?field=name&query=*&sEcho=1&iDisplayStart='
