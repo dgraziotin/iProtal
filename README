@@ -1,0 +1,9 @@
+iProtal is a Mac OS X program that scans an iTunes Library of songs and
+automatically fetches the correct genre for all the artists.
+Currently, it supports:
+- Prog Archives (http://progarchives.com)
+- Enciclopaedia Metallum (http://metal-archives.com)
+
+At the current state the author is experimenting with the development, but the
+program already fetches the genre from the previously listed sources, displaying
+some information on the console.

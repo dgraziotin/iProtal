@@ -44,11 +44,11 @@ class ProgArchives(Fetcher):
     __NAME = 'ProgArchives'
 
     def search(self, name):
-        results = []
-        for artist in self.fetch(name):
-            if artist.name.lower() == name.lower():
-                results.append(artist)
-        return results
+        genres = []
+        for band in self.fetch(name):
+            if band.name.lower() == name.lower():
+                genres.append(band.genre)
+        return genres
             
     def fetch(self, name):
         results = []
@@ -76,9 +76,14 @@ class ProgArchives(Fetcher):
 class MetalArchives(Fetcher):
     
     __BASE_URL = 'http://www.metal-archives.com/search/ajax-band-search/?field=name&exactBandMatch=1&query='
+    __NAME = 'MetalArchives'
     
     def search(self, name):
-        return self.fetch(name)
+        genres = []
+        bands = self.fetch(name)
+        for band in bands:
+            genres.append(band.genre)
+        return genres
     
     def fetch(self, artist):
         results = []
