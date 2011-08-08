@@ -13,7 +13,7 @@ class IProtal(object):
 
         self.bands = self.filter_bands_from_tracks()
 
-        self.tracks_delayed = {}
+        self.tracks_multiple_genres_found = {}
         self.tracks_no_genre_found = []
     
     def filter_bands_from_tracks(self, tracks=None):
@@ -50,13 +50,13 @@ class IProtal(object):
             fetcher = fetchers.MetalArchives()
             results = fetcher.search(artist)
             if not results:
-                print "No results from MetalArchives. Sorry."
+                print "No results from MetalArchives."
         else:
             fetcher = None
         
         return results
 
-    def update_itunes_tracks_genre(self):
+    def update_tracks_genre(self):
         for band in self.bands:
             print "Current Band: " + band.name
             print "Current Genre: " + band.genre
@@ -68,14 +68,21 @@ class IProtal(object):
                     self.tracks_no_genre_found.append(track)
             elif len(proposed_genre) == 1:
                 print "New Genre: " + proposed_genre[0]
+                self.itunes.set_itunes_tracks_genre(proposed_genre[0], tracks=self.itunes.filter_tracks(band))
             else:
                 print "Multiple Genres Proposed: "
                 band.genre_proposed = proposed_genre
                 band.tracks = self.itunes.filter_tracks(band)
                 for genre in band.genre_proposed:
                     print genre + ", ",
-                    self.tracks_delayed[band.name] = band
+                    self.tracks_multiple_genres_found[band.name] = band
                 print "\nQueued for later."
+
+    def check_multiple_genre_found(self):
+        pass
+
+    def check_no_genre_found(self):
+        pass
 
 if __name__=="__main__":
     while True:
@@ -107,9 +114,9 @@ if __name__=="__main__":
 
     choice = raw_input("Enter your choice (Y/N): ")
     if choice.upper() == 'Y':
-        iprotal.update_itunes_tracks_genre()
-        if iprotal.tracks_delayed:
-            for key, value in iprotal.tracks_delayed.items():
+        iprotal.update_tracks_genre()
+        if iprotal.tracks_multiple_genres_found:
+            for key, value in iprotal.tracks_multiple_genres_found.items():
                 os.system('/usr/bin/clear')
                 print "There are some not processed artists for multiple genre:"
                 band = value
@@ -122,6 +129,7 @@ if __name__=="__main__":
                     try:
                         choice = int(raw_input("Enter the Genre number: "))
                         print "You selected: " + band.genre_proposed[choice]
+                        iprotal.itunes.set_itunes_tracks_genre(band.genre_proposed[choice], tracks=iprotal.itunes.filter_tracks(band))
                         break
                     except ValueError:
                         pass
