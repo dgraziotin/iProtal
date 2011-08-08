@@ -1,13 +1,57 @@
-iProtal is a Mac OS X program that scans an iTunes Library of songs and
-automatically fetches the correct genre for all the artists.
-Currently, it supports:
+--------------------------------------------------------------------------------
+iProtal -   an automatic tool for adjusting Metal and Progressive Rock / Metal
+            genre of iTunes songs
+--------------------------------------------------------------------------------
+
+iProtal is a Mac OS X program that scans an iTunes Library of songs, or the 
+currently selected songs and automatically fetches the correct genre
+for all the artists.
+
+Currently, it fetches the genre from:
 - Prog Archives (http://progarchives.com)
 - Enciclopaedia Metallum (http://metal-archives.com)
 
-At the current state the author is experimenting with the development, but the
-program already fetches the genre from the previously listed sources, displaying
-some information on the console.
+At the current state the program only works in Terminal mode, so everything is 
+displayed as scary text. The author is not planning to write a graphical user
+interface now, but welcomes anybody who offers to write one.
 
-How does it work?
-For any selected iTunes song (or the whole iTunes Library), the program retrieves the artist name and tries to retrieve
-the genre from the fetchers, one by one. If the first has no results, it tries with the second one and so on.
+HOW TO RUN IT?
+1) Install py-appscript
+First, install py-appscript as it is required. From the terminal, run
+sudo easy_install appscript
+Other ways to install it are available on 
+the official website http://appscript.sourceforge.net/py-appscript/install.html
+2) Run the program's main.py. If you are not confident with the terminal, an 
+easy way is to open the "Terminal" application of Mac OS X, type "python "
+without the double quotes (followed by a space, as you see), 
+drag the file src/main.py in the terminal and hit enter.
+
+HOW DOES IT WORK?
+For any selected iTunes song (or the whole iTunes Library), the program fetches
+the genre from the fetchers in the order listed above. The possible cases are:
+1) No genre is found
+The tracks for which no genre could be found are stored in memory and displayed
+before exiting the program.
+2) A Genre is found
+The tracks genre is automatically updated without user interaction.
+3) More genres are found
+This happens with Enciclopaedia Metallum when more artists are found under the
+same name. The program delays the processing of the related songs and continues
+with the next group. Before exiting, iProtal asks the user which genre is more
+suitable for the tracks.
+
+WHEN DOES IT NOT WORK?
+The program won't work:
+1) In case of bugs
+Please drop a mail to d AT danielgraziotin DOT it, describing what
+happened, including the program output. The author will fix the bugs
+2) The Artist name is not the same as the one stored in the remote fetchers
+Please try to use official names when naming Artists in iTunes. "F4tesWarn1ng" 
+is not the same as "Fates Warning". The program does not care about upper cases.
+
+MORE FETCHERS?
+Send a mail to d AT danielgraziotin DOT it and suggest a new source for getting
+genres. The author will be happy to add it in his very scarce free time.
+
+SUGGESTIONS, FEATURE REQUESTS
+Send a mail to d AT danielgraziotin DOT it.

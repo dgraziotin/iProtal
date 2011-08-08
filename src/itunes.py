@@ -1,11 +1,9 @@
 from appscript import app
-import models
 
 """
 Wraps operations to be performed in iTunes
 """
 class ITunes(object):
-
     @staticmethod
     def get_library_playlists():
         return app('iTunes').library_playlists.get()
@@ -14,7 +12,7 @@ class ITunes(object):
         self.library_name = library_name
         self.itunes = app('iTunes')
         if self.library_name:
-            self.itunes_library =  self.itunes.library_playlists[self.library_name]
+            self.itunes_library = self.itunes.library_playlists[self.library_name]
             self.tracks = self.fetch_tracks()
         else:
             self.itunes_library = None

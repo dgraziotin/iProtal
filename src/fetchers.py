@@ -8,38 +8,38 @@ import json
 Abstract base class for fetchers
 """
 class Fetcher(object):
-    
     """
     Base URL for fetching Artists' details 
     """
     __BASE_URL = ''
-    
+
     """
     Unique name for fetcher, used in models.Band.origin
     """
-    
+
     __NAME = ''
-    
+
     """
     Given an Artist name, searches it remotely for the genre.
     It returns a list of models.Band objects or an Empty list.
     The name is internally treated as case-insensitive.
     This should be the only one method called by other objects
     """
+
     def search(self, name):
-        raise NotImplementedError( "Should have implemented this" )
-    
+        raise NotImplementedError("Should have implemented this")
+
     """
     Fetches one or more artists under the given name.
     The name is internally treated as case-insensitive.
     This method should always be used as helper for search(name) method
     """
+
     def fetch(self, name):
-        raise NotImplementedError( "Should have implemented this" )
-    
+        raise NotImplementedError("Should have implemented this")
+
 
 class ProgArchives(Fetcher):
-    
     __BASE_URL = 'http://www.progarchives.com/bands-alpha.asp?letter=*'
     __NAME = 'ProgArchives'
 
@@ -49,7 +49,7 @@ class ProgArchives(Fetcher):
             if band.name.lower() == name.lower():
                 genres.append(band.genre)
         return genres
-            
+
     def fetch(self, name):
         results = []
         parsed_page = None
@@ -60,7 +60,7 @@ class ProgArchives(Fetcher):
             except IOError:
                 print "HTTP Error. Trying again.."
         processed_table = parsed_page.xpath("//table")[0]
-        
+
         band_attributes = []
         for row in processed_table[1:]:
             band_attributes = []
@@ -78,24 +78,23 @@ class ProgArchives(Fetcher):
                 print str(e)
         return results
 
-        
+
 class MetalArchives(Fetcher):
-    
     __BASE_URL = 'http://www.metal-archives.com/search/ajax-band-search/?field=name&exactBandMatch=1&query='
     __NAME = 'MetalArchives'
-    
+
     def search(self, name):
         genres = []
         bands = self.fetch(name)
         for band in bands:
             genres.append(band.genre)
         return genres
-    
+
     def fetch(self, artist):
         results = []
         artist = urllib2.quote(artist)
-        base_url = MetalArchives.__BASE_URL+artist+'&sEcho=1&iDisplayStart='
-        
+        base_url = MetalArchives.__BASE_URL + artist + '&sEcho=1&iDisplayStart='
+
         idisplaystart = 0
         url = base_url + str(idisplaystart)
         json_file = None
@@ -109,7 +108,7 @@ class MetalArchives(Fetcher):
 
         #itotalrecords =  int(json_string['iTotalRecords'])
         bands_json = json_string[u'aaData']
-                
+
         for band_json in bands_json:
             name = band_json[0]
             genre = band_json[1]
