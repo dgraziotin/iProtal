@@ -3,5 +3,7 @@ class Band(object):
         self.name = name
         self.genre = genre
         self.origin = origin
+        self.genre_proposed = None
+        self.tracks = None
     
     

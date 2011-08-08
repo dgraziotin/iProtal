@@ -52,7 +52,13 @@ class ProgArchives(Fetcher):
             
     def fetch(self, name):
         results = []
-        parsed_page = lxml.html.parse(ProgArchives.__BASE_URL)
+        parsed_page = None
+
+        while not parsed_page:
+            try:
+                parsed_page = lxml.html.parse(ProgArchives.__BASE_URL)
+            except IOError:
+                print "HTTP Error. Trying again.."
         processed_table = parsed_page.xpath("//table")[0]
         
         band_attributes = []
@@ -92,7 +98,13 @@ class MetalArchives(Fetcher):
         
         idisplaystart = 0
         url = base_url + str(idisplaystart)
-        json_file = urllib2.urlopen(url)
+        json_file = None
+        while not json_file:
+            try:
+                json_file = urllib2.urlopen(url)
+            except urllib2.URLError:
+                print "HTTP connection error, retrying.."
+                pass
         json_string = json.load(json_file)
 
         #itotalrecords =  int(json_string['iTotalRecords'])
