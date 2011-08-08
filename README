@@ -3,6 +3,8 @@ iProtal -   an automatic tool for adjusting Metal and Progressive Rock / Metal
             genre of iTunes songs
 --------------------------------------------------------------------------------
 
+http://task3.cc/projects/iprotal
+
 iProtal is a Mac OS X program that scans an iTunes Library of songs, or the 
 currently selected songs and automatically fetches the correct genre
 for all the artists.
@@ -25,6 +27,10 @@ the official website http://appscript.sourceforge.net/py-appscript/install.html
 easy way is to open the "Terminal" application of Mac OS X, type "python "
 without the double quotes (followed by a space, as you see), 
 drag the file src/main.py in the terminal and hit enter.
+
+Screenshots for how to run the program are 
+available at http://task3.cc/projects/iprotal
+
 
 HOW DOES IT WORK?
 For any selected iTunes song (or the whole iTunes Library), the program fetches
