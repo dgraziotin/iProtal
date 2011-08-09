@@ -1,3 +1,4 @@
+import appscript
 from appscript import app
 
 """
@@ -51,10 +52,18 @@ class ITunes(object):
     def set_itunes_tracks_genre(self, genre, band=None, tracks=None):
         if tracks:
             for track in tracks:
-                track.genre.set(genre)
+                try:
+                    track.genre.set(genre)
+                except appscript.reference.CommandError:
+                    print "Failed to set the genre of one song. Maybe it is missing from the hard disk"
+                    continue
         else:
             tracks = self.filter_tracks(band)
             for track in tracks:
-                track.genre.set(genre)
+                try:
+                    track.genre.set(genre)
+                except appscript.reference.CommandError:
+                    print "Failed to set the genre of one song. Maybe it is missing from the hard disk"
+                    continue
 
 
