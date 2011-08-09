@@ -38,11 +38,16 @@ class Fetcher(object):
     def fetch(self, name):
         raise NotImplementedError("Should have implemented this")
 
-
+"""
+Fecher for ProgArchives
+"""
 class ProgArchives(Fetcher):
     __BASE_URL = 'http://www.progarchives.com/bands-alpha.asp?letter=*'
     __NAME = 'ProgArchives'
 
+    """
+    Given a band name, searches in fetched results
+    """
     def search(self, name):
         genres = []
         for band in self.fetch(name):
@@ -50,6 +55,10 @@ class ProgArchives(Fetcher):
                 genres.append(band.genre)
         return genres
 
+    """
+    Downloads __BASE_URL page and parses it, looking for band name and extracting the genre.
+    On HTTP error, tries again. On Unicode Errors, ignores.
+    """
     def fetch(self, name):
         results = []
         parsed_page = None
@@ -83,6 +92,9 @@ class MetalArchives(Fetcher):
     __BASE_URL = 'http://www.metal-archives.com/search/ajax-band-search/?field=name&exactBandMatch=1&query='
     __NAME = 'MetalArchives'
 
+    """
+    Given a band name, searches in fetched results
+    """
     def search(self, name):
         genres = []
         bands = self.fetch(name)
@@ -90,6 +102,11 @@ class MetalArchives(Fetcher):
             genres.append(band.genre)
         return genres
 
+    """
+    Downloads __BASE_URL JSON file and parses it. Retrieves one or more bands with the given name and discovers the
+    genre.
+    On HTTP error, tries again. On Unicode Errors, ignores.
+    """
     def fetch(self, artist):
         results = []
         artist = urllib2.quote(artist)

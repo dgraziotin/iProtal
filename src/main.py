@@ -7,6 +7,11 @@ import os
 Main application
 """
 class IProtal(object):
+
+    """
+    Responsible for setting up the iTunes wrapper, the library name and initialize
+    the lists of tracks for which no genre or multiple genres are found
+    """
     def __init__(self, library_name=None):
         self.itunes = itunes.ITunes(library_name)
 
@@ -15,6 +20,9 @@ class IProtal(object):
         self.tracks_multiple_genres_found = {}
         self.tracks_no_genre_found = []
 
+    """
+    Given a list of tracks, retrieves a list of Band object
+    """
     def filter_bands_from_tracks(self, tracks=None):
         bands = []
         artists_seen = []
@@ -37,6 +45,10 @@ class IProtal(object):
                 artists_seen.append(artist)
         return bands
 
+    """
+    Helper method to setup fetchers and retrieve the genre. It works under a fallback strategy.
+    First ProgArchives is tried, then MetalArchives. It returns fetcher results.
+    """
     def fetch_genre(self, artist, fetcher="ProgArchives"):
         results = []
         if fetcher == 'ProgArchives':
@@ -55,6 +67,10 @@ class IProtal(object):
 
         return results
 
+    """
+    Helper method to iterate through the Band list of the selected iTunes tracks or the iTunes library and update the
+    the genre by calling the fetchers. It handles the cases for which 0 genres, 1 genre and 1+ genres are found.
+    """
     def update_tracks_genre(self):
         for band in self.bands:
             print "Current Band: " + band.name
@@ -77,6 +93,9 @@ class IProtal(object):
                     self.tracks_multiple_genres_found[band.name] = band
                 print "\nQueued for later."
 
+    """
+    Handles user interaction when there are multiple genres found
+    """
     def update_tracks_multiple_genre(self):
         for key, value in self.tracks_multiple_genres_found.items():
             os.system('/usr/bin/clear')
@@ -98,7 +117,10 @@ class IProtal(object):
                     pass
                 except IndexError:
                     pass
-
+                
+    """
+    Displays the Bands for which no genre is found
+    """
     def display_tracks_no_genre(self):
         os.system('/usr/bin/clear')
         print "There are some artists for which no genre was found:"

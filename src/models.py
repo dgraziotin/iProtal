@@ -1,3 +1,6 @@
+"""
+Represents a Band in iProtal
+"""
 class Band(object):
     def __init_(self, name=u"", genre=u"", origin=u""):
         self.name = name
