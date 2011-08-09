@@ -3,6 +3,7 @@ import lxml.etree
 import models
 import urllib2
 import json
+import httplib
 
 """
 Abstract base class for fetchers
@@ -68,6 +69,9 @@ class ProgArchives(Fetcher):
                 parsed_page = lxml.html.parse(ProgArchives.__BASE_URL)
             except IOError:
                 print "HTTP Error. Trying again.."
+            except httplib.BadStatusLine:
+                print "HTTP connection error, retrying.."
+                pass
         processed_table = parsed_page.xpath("//table")[0]
 
         band_attributes = []
@@ -119,6 +123,9 @@ class MetalArchives(Fetcher):
             try:
                 json_file = urllib2.urlopen(url)
             except urllib2.URLError:
+                print "HTTP connection error, retrying.."
+                pass
+            except httplib.BadStatusLine:
                 print "HTTP connection error, retrying.."
                 pass
         json_string = json.load(json_file)
