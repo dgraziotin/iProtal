@@ -4,6 +4,7 @@ import models
 import urllib2
 import json
 import httplib
+import unicodedata
 
 """
 Abstract base class for fetchers
@@ -113,9 +114,11 @@ class MetalArchives(Fetcher):
     """
     def fetch(self, artist):
         results = []
-        artist = urllib2.quote(artist)
+        try:
+            artist = urllib2.quote(artist)
+        except KeyError:
+            artist = urllib2.quote(unicodedata.normalize("NFKD",artist).encode('ascii','ignore'))
         base_url = MetalArchives.__BASE_URL + artist + '&sEcho=1&iDisplayStart='
-
         idisplaystart = 0
         url = base_url + str(idisplaystart)
         json_file = None
